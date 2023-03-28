@@ -20,8 +20,10 @@ namespace Core.Controllers
         private void Start()
         {
             uiButtons.AddAction(TypePedal.Left, () => vehicleControl.PushBackward(-1f));
+            uiButtons.AddAction(TypePedal.Left, () => vehicleControl.PushForward(-1f));
             uiButtons.AddAction(TypePedal.Left, () => vehicleControl.PushVehicle(-1f));
             uiButtons.AddAction(TypePedal.Right, () => vehicleControl.PushForward(1f));
+            uiButtons.AddAction(TypePedal.Right, () => vehicleControl.PushBackward(1f));
             uiButtons.AddAction(TypePedal.Right, () => vehicleControl.PushVehicle(1f));
         }
 
