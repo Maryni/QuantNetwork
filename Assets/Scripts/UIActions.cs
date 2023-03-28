@@ -23,19 +23,13 @@ namespace UI.Actions
     {
         #region Inspector variables
 
-        [SerializeField] private CanvasGroup mainMenuGameObject;
-        [SerializeField] private CanvasGroup linksGameObject;
-
-        [SerializeField] private float durationLoadFade;
-        [SerializeField] private float durationExitFade;
-        [SerializeField] private float durationShowFade;
-
+        [SerializeField] private GameObject mainMenuGameObject;
+        [SerializeField] private GameObject linksGameObject;
+        
         [SerializeField] private Button playButton;
         [SerializeField] private Button aboutMeButton;
         [SerializeField] private Button aboutMeInButton;
         [SerializeField] private Button exitButton;
-
-        private Tween fadeTween;
 
         #endregion Inspector variables
 
@@ -56,20 +50,10 @@ namespace UI.Actions
             switch (typeUI)
             {
                 case TypeUI.Links: 
-                    ApplyFade(1, durationShowFade, linksGameObject, () =>
-                    {
-                        linksGameObject.interactable = true;
-                        linksGameObject.blocksRaycasts = true;
-                    });
-                    //linksGameObject.gameObject.SetActive(visible);
+                    linksGameObject.SetActive(visible);
                     break;
                 case TypeUI.MainMenu: 
-                    ApplyFade(1, durationShowFade, mainMenuGameObject, () =>
-                    {
-                        mainMenuGameObject.interactable = true;
-                        mainMenuGameObject.blocksRaycasts = true;
-                    });
-                    //mainMenuGameObject.gameObject.SetActive(visible);
+                    mainMenuGameObject.SetActive(visible);
                     break;
                 default:
                     break;
@@ -87,33 +71,16 @@ namespace UI.Actions
 
         private void Awake()
         {
-            DOTween.Init();
-            playButton.onClick.AddListener(()=> SetVisible(TypeUI.MainMenu, false));
             playButton.onClick.AddListener(()=> Load(1));
+            playButton.onClick.AddListener(()=> SetVisible(TypeUI.MainMenu, false));
             aboutMeButton.onClick.AddListener(()=> SetVisible(TypeUI.Links, true));
-            aboutMeButton.onClick.AddListener(()=> SetVisible(TypeUI.MainMenu, false));
             exitButton.onClick.AddListener(()=> SetVisible(TypeUI.MainMenu, false));
             exitButton.onClick.AddListener(Exit);
             aboutMeInButton.onClick.AddListener(()=> OpenURL("t.me/prikolchik574"));
             aboutMeInButton.onClick.AddListener(()=> SetVisible(TypeUI.Links, false));
-            aboutMeInButton.onClick.AddListener(()=> SetVisible(TypeUI.MainMenu, true));
         }
 
         #endregion Unity functions
         
-        #region private functions
-
-        private void ApplyFade(float endValue, float duration, CanvasGroup canvasGroup, TweenCallback onEnd)
-        {
-            if (fadeTween != null)
-            {
-                fadeTween.Kill(false);
-            }
-
-            fadeTween = canvasGroup.DOFade(endValue, duration);
-            fadeTween.onComplete += onEnd;
-        }
-
-        #endregion private functions
     }
 }

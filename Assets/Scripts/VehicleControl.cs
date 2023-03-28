@@ -1,59 +1,59 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
-public class VehicleControl : MonoBehaviour
+namespace Core.Controllers
 {
-    #region Inspector variables
-
-    [SerializeField] private Rigidbody2D rigidbody2D;
-    [SerializeField] private float forceMod;
-    [SerializeField] private float rotateDuration;
-    [SerializeField] private ForceMode2D forceMode2D;
-
-    #endregion Inspector variables
-
-    #region private variables
-
-    private Tween rotateTweeen;
-
-    #endregion private variables
-
-    #region public functions
-
-    public void PushForward()
+    public class VehicleControl : MonoBehaviour
     {
-        //rigidbody2D.AddForce(new Vector2(0.7f, -0.7f) * forceMod, forceMode2D);
-        rigidbody2D.AddForce(Vector2.right * forceMod, forceMode2D);
-        Rotate(new Vector3(0, 0, -50), rotateDuration);
-    }
-    
-    public void PushBackward()
-    {
-        //rigidbody2D.AddForce(new Vector2(-0.7f, 0.7f) * forceMod, forceMode2D);
-        rigidbody2D.AddForce(Vector2.right * forceMod, forceMode2D);
-        Rotate(new Vector3(0, 0, 50), rotateDuration);
-    }
+        #region Inspector variables
 
-    public void RotateToNormal()
-    {
-        Rotate(Vector3.zero, rotateDuration);
-    }
+        [SerializeField] private Rigidbody2D backTireRig;
+        [SerializeField] private Rigidbody2D forwardTireRig;
+        [SerializeField] private Rigidbody2D vehicleControllerRig;
+        [SerializeField] private float speed;
+        [SerializeField] private float angleRotation;
+        [SerializeField] private float dampingRotation;
 
-    #endregion public functions
+        #endregion Inspector variables
 
-    #region private functions
+        #region public functions
 
-    private void Rotate(Vector3 endValue, float rotateDuration)
-    {
-        if (rotateTweeen != null)
+        public void PushForward(float value)
         {
-            rotateTweeen.Kill(false);
+            forwardTireRig.AddTorque(-value * speed * Time.fixedDeltaTime);
+            Quaternion currentRotation = transform.rotation;
+            var rotationQ = transform.eulerAngles.z;
+            rotationQ += rotationQ * Time.fixedDeltaTime;
+            var rotationQFull = Quaternion.Euler(currentRotation.x,
+                currentRotation.y,
+                rotationQ);
+            transform.rotation =
+                Quaternion.Lerp(transform.rotation, rotationQFull, Time.fixedDeltaTime * dampingRotation);
         }
 
-        rotateTweeen = rigidbody2D.transform.DORotate(endValue, rotateDuration);
-    }
+        public void PushBackward(float value)
+        {
+            backTireRig.AddTorque(-value * speed * Time.fixedDeltaTime);
+            Quaternion currentRotation = transform.rotation;
+            var rotationQ = transform.eulerAngles.z;
+            rotationQ -= rotationQ * Time.fixedDeltaTime;
+            var rotationQFull = Quaternion.Euler(currentRotation.x,
+                currentRotation.y,
+                rotationQ);
+            transform.rotation =
+                Quaternion.Lerp(transform.rotation, rotationQFull, Time.fixedDeltaTime * dampingRotation);
+        }
 
-    #endregion private functions
+        public void PushVehicle(float value)
+        {
+            vehicleControllerRig.AddTorque(-value * speed * Time.fixedDeltaTime);
+        }
+
+
+        #endregion public functions
+
+    }
 }

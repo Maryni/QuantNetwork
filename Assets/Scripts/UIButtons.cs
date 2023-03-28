@@ -4,37 +4,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-#region enum
-
-public enum TypePedal
+namespace UI.Buttons
 {
-    Left,
-    Right
-}
 
-#endregion
+    #region enum
 
-public class UIButtons : MonoBehaviour
-{
-    #region Inspector variables
-
-    [SerializeField] private Button leftButton;
-    [SerializeField] private Button rightButton;
-
-    #endregion Inspector variables
-
-    #region public functions
-
-    public void AddAction(TypePedal typePedal, Action action)
+    public enum TypePedal
     {
-        switch (typePedal)
-        {
-            case TypePedal.Left: leftButton.onClick.AddListener(action.Invoke);
-                break;
-            case TypePedal.Right: rightButton.onClick.AddListener(action.Invoke);
-                break;
-        }
+        Left,
+        Right
     }
 
-    #endregion public functions
+    #endregion
+
+    public class UIButtons : MonoBehaviour
+    {
+        #region Inspector variables
+
+        [SerializeField] private Button leftButton;
+        [SerializeField] private Button rightButton;
+
+        #endregion Inspector variables
+
+        #region public functions
+
+        public void AddAction(TypePedal typePedal, Action action)
+        {
+            switch (typePedal)
+            {
+                case TypePedal.Left:
+                    leftButton.onClick.AddListener(action.Invoke);
+                    break;
+                case TypePedal.Right:
+                    rightButton.onClick.AddListener(action.Invoke);
+                    break;
+            }
+        }
+
+        #endregion public functions
+    }
 }
